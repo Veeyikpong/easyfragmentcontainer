@@ -52,7 +52,7 @@ dependencies {
 }
 
 ext {
-    bintrayRepo = 'EasyFragmentContainer'
+    bintrayRepo = 'pongstudio'
     bintrayName = 'EasyFragmentContainer'
 
     publishedGroupId = 'com.veeyikpong'
