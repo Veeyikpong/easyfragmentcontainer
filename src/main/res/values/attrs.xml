@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FragmentContainer">
+        <attr name="enterAnimation" format="reference"/>
+        <attr name="exitAnimation" format="reference"/>
+    </declare-styleable>
+</resources>
