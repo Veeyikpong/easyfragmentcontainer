@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
 class FragmentContainer @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     interface FragmentListener {
@@ -28,8 +28,8 @@ class FragmentContainer @JvmOverloads constructor(
 
     init {
         val attributeArray = context.obtainStyledAttributes(
-            attrs,
-            R.styleable.FragmentContainer
+                attrs,
+                R.styleable.FragmentContainer
         )
 
         mEnterAnimation = attributeArray.getResourceId(R.styleable.FragmentContainer_enterAnimation, 0)
@@ -93,13 +93,41 @@ class FragmentContainer @JvmOverloads constructor(
      */
     @NonNull
     fun replaceFragment(fragment: Fragment) {
-        mFragmentManager
-            .beginTransaction()
-            .replace(this.id, fragment)
-            .disallowAddToBackStack()
-            .commitAllowingStateLoss()
 
-        currentFragment = fragment
+        val transaction = mFragmentManager
+                .beginTransaction()
+
+        transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
+
+        transaction
+                .replace(this.id, fragment)
+                .disallowAddToBackStack()
+                .commit()
+    }
+
+    /**
+     * @param fragment      The fragment to be replaced
+     */
+    @NonNull
+    fun replaceFragment(fragment: Fragment, enterAnimation: Int = 0, exitAnimation: Int = 0) {
+
+        val transaction = mFragmentManager
+                .beginTransaction()
+
+        if (enterAnimation != 0 && exitAnimation != 0) {
+            transaction.setCustomAnimations(enterAnimation, exitAnimation)
+        } else if (enterAnimation != 0 && exitAnimation == 0) {
+            transaction.setCustomAnimations(enterAnimation, mExitAnimation)
+        } else if (exitAnimation != 0 && enterAnimation == 0) {
+            transaction.setCustomAnimations(mEnterAnimation, exitAnimation)
+        } else {
+            transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
+        }
+
+        transaction
+                .replace(this.id, fragment)
+                .disallowAddToBackStack()
+                .commit()
     }
 
     /**
@@ -114,9 +142,7 @@ class FragmentContainer @JvmOverloads constructor(
         fragment.arguments = bundle
 
         val transaction = mFragmentManager
-            .beginTransaction()
-            .replace(this.id, fragment, fragment.javaClass.simpleName)
-            .addToBackStack(fragment.javaClass.simpleName)
+                .beginTransaction()
 
         if (enterAnimation != 0 && exitAnimation != 0) {
             transaction.setCustomAnimations(enterAnimation, exitAnimation)
@@ -127,6 +153,10 @@ class FragmentContainer @JvmOverloads constructor(
         } else {
             transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
         }
+
+        transaction
+                .replace(this.id, fragment, fragment.javaClass.simpleName)
+                .addToBackStack(fragment.javaClass.simpleName)
 
         transaction.commit()
     }
@@ -141,11 +171,11 @@ class FragmentContainer @JvmOverloads constructor(
      */
     @NonNull
     fun addFragment(
-        fragment: Fragment,
-        bundle: Bundle = Bundle(),
-        fragmentTag: String = "",
-        enterAnimation: Int = 0,
-        exitAnimation: Int = 0
+            fragment: Fragment,
+            bundle: Bundle = Bundle(),
+            fragmentTag: String = "",
+            enterAnimation: Int = 0,
+            exitAnimation: Int = 0
     ) {
         fragment.arguments = bundle
 
@@ -155,9 +185,7 @@ class FragmentContainer @JvmOverloads constructor(
         }
 
         val transaction = mFragmentManager
-            .beginTransaction()
-            .replace(this.id, fragment, tag)
-            .addToBackStack(tag)
+                .beginTransaction()
 
         if (enterAnimation != 0 && exitAnimation != 0) {
             transaction.setCustomAnimations(enterAnimation, exitAnimation)
@@ -168,6 +196,10 @@ class FragmentContainer @JvmOverloads constructor(
         } else {
             transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
         }
+
+        transaction
+                .replace(this.id, fragment, tag)
+                .addToBackStack(tag)
 
         transaction.commit()
     }
