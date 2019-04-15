@@ -25,6 +25,10 @@ class FragmentContainer @JvmOverloads constructor(
     //Animations
     private var mEnterAnimation: Int = 0
     private var mExitAnimation: Int = 0
+    private var mPopEnterAnimation: Int = 0
+    private var mPopExitAnimation: Int = 0
+
+    private var fragmentTag = ""
 
     init {
         val attributeArray = context.obtainStyledAttributes(
@@ -66,19 +70,35 @@ class FragmentContainer @JvmOverloads constructor(
     }
 
     /**
-     * @param animation Set the enter animation for this fragment container
+     * @param animation Set the enter animation for this fragment container / current transaction
      */
     @NonNull
-    fun setEnterAnimation(animation: Int) {
+    fun enterAnimation(animation: Int) {
         this.mEnterAnimation = animation
     }
 
     /**
-     * @param animation Set the exit animation for this fragment container
+     * @param animation Set pop enter animation
      */
     @NonNull
-    fun setExitAnimation(animation: Int) {
+    fun popEnterAnimation(animation: Int){
+        this.mPopEnterAnimation = animation
+    }
+
+    /**
+     * @param animation Set the exit animation for this fragment container / current transaction
+     */
+    @NonNull
+    fun exitAnimation(animation: Int) {
         this.mExitAnimation = animation
+    }
+
+    /**
+     * @param animation Set pop exit animation
+     */
+    @NonNull
+    fun popExitAnimation(animation: Int){
+        this.mPopExitAnimation = animation
     }
 
     /**
@@ -89,7 +109,14 @@ class FragmentContainer @JvmOverloads constructor(
     }
 
     /**
-     * @param fragment      The fragment to be replaced
+     * @param fragmentTag set tag for current fragment
+     */
+    fun fragmentTag(fragmentTag: String){
+        this.fragmentTag = fragmentTag
+    }
+
+    /**
+     * @param fragment The fragment to be replaced
      */
     @NonNull
     fun replaceFragment(fragment: Fragment) {
@@ -97,85 +124,23 @@ class FragmentContainer @JvmOverloads constructor(
         val transaction = mFragmentManager
                 .beginTransaction()
 
-        transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
+        transaction.setCustomAnimations(mEnterAnimation, mExitAnimation, mPopEnterAnimation, mPopExitAnimation)
 
         transaction
                 .replace(this.id, fragment)
                 .disallowAddToBackStack()
                 .commit()
-    }
-
-    /**
-     * @param fragment      The fragment to be replaced
-     */
-    @NonNull
-    fun replaceFragment(fragment: Fragment, enterAnimation: Int = 0, exitAnimation: Int = 0) {
-
-        val transaction = mFragmentManager
-                .beginTransaction()
-
-        if (enterAnimation != 0 && exitAnimation != 0) {
-            transaction.setCustomAnimations(enterAnimation, exitAnimation)
-        } else if (enterAnimation != 0 && exitAnimation == 0) {
-            transaction.setCustomAnimations(enterAnimation, mExitAnimation)
-        } else if (exitAnimation != 0 && enterAnimation == 0) {
-            transaction.setCustomAnimations(mEnterAnimation, exitAnimation)
-        } else {
-            transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
-        }
-
-        transaction
-                .replace(this.id, fragment)
-                .disallowAddToBackStack()
-                .commit()
-    }
-
-    /**
-     * This function adds a fragment with optional bundle arguments, enter animation and exit animation
-     * @param fragment          The fragment to be added
-     * @param bundle            OPTIONAL bundle arguments
-     * @param enterAnimation    OPTIONAL enter animation. If not passing in, the animation from XML will be used
-     * @param exitAnimation     OPTIONAL exit animation. if not passed in, the animation from XML will be used
-     */
-    @NonNull
-    fun addFragment(fragment: Fragment, bundle: Bundle = Bundle(), enterAnimation: Int = 0, exitAnimation: Int = 0) {
-        fragment.arguments = bundle
-
-        val transaction = mFragmentManager
-                .beginTransaction()
-
-        if (enterAnimation != 0 && exitAnimation != 0) {
-            transaction.setCustomAnimations(enterAnimation, exitAnimation)
-        } else if (enterAnimation != 0 && exitAnimation == 0) {
-            transaction.setCustomAnimations(enterAnimation, mExitAnimation)
-        } else if (exitAnimation != 0 && enterAnimation == 0) {
-            transaction.setCustomAnimations(mEnterAnimation, exitAnimation)
-        } else {
-            transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
-        }
-
-        transaction
-                .replace(this.id, fragment, fragment.javaClass.simpleName)
-                .addToBackStack(fragment.javaClass.simpleName)
-
-        transaction.commit()
     }
 
     /**
      * This function adds a fragment with desired tag, optional bundle arguments, enter animation and exit animation
      * @param fragment          The fragment to be added
      * @param bundle            OPTIONAL bundle arguments
-     * @param fragmentTag       Tag for the fragment to be added
-     * @param enterAnimation    OPTIONAL enter animation. If not passing in, the animation from XML will be used
-     * @param exitAnimation     OPTIONAL exit animation. if not passed in, the animation from XML will be used
      */
     @NonNull
     fun addFragment(
             fragment: Fragment,
-            bundle: Bundle = Bundle(),
-            fragmentTag: String = "",
-            enterAnimation: Int = 0,
-            exitAnimation: Int = 0
+            bundle: Bundle = Bundle()
     ) {
         fragment.arguments = bundle
 
@@ -187,15 +152,7 @@ class FragmentContainer @JvmOverloads constructor(
         val transaction = mFragmentManager
                 .beginTransaction()
 
-        if (enterAnimation != 0 && exitAnimation != 0) {
-            transaction.setCustomAnimations(enterAnimation, exitAnimation)
-        } else if (enterAnimation != 0 && exitAnimation == 0) {
-            transaction.setCustomAnimations(enterAnimation, mExitAnimation)
-        } else if (exitAnimation != 0 && enterAnimation == 0) {
-            transaction.setCustomAnimations(mEnterAnimation, exitAnimation)
-        } else {
-            transaction.setCustomAnimations(mEnterAnimation, mExitAnimation)
-        }
+        transaction.setCustomAnimations(mEnterAnimation, mExitAnimation, mPopEnterAnimation, mPopExitAnimation)
 
         transaction
                 .replace(this.id, fragment, tag)

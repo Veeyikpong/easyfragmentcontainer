@@ -59,12 +59,12 @@ ext {
     libraryName = 'EasyFragmentContainer'
     artifact = 'easyfragmentcontainer'
 
-    libraryDescription = 'A lightweight fragment container extending FrameLayout to reduce boilerplate code.'
+    libraryDescription = 'A lightweight fragment container written in Kotlin to reduce boilerplate code.'
 
     siteUrl = 'https://github.com/Veeyikpong/easyfragmentcontainer'
     gitUrl = 'https://github.com/Veeyikpong/easyfragmentcontainer.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '1.0.2'
 
     developerId = 'vypong'
     developerName = 'Vee Yik Pong'
