@@ -3,5 +3,7 @@
     <declare-styleable name="FragmentContainer">
         <attr name="enterAnimation" format="reference"/>
         <attr name="exitAnimation" format="reference"/>
+        <attr name="popEnterAnimation" format="reference"/>
+        <attr name="popExitAnimation" format="reference"/>
     </declare-styleable>
 </resources>

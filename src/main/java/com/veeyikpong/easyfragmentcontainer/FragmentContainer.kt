@@ -38,6 +38,8 @@ class FragmentContainer @JvmOverloads constructor(
 
         mEnterAnimation = attributeArray.getResourceId(R.styleable.FragmentContainer_enterAnimation, 0)
         mExitAnimation = attributeArray.getResourceId(R.styleable.FragmentContainer_exitAnimation, 0)
+        mPopEnterAnimation = attributeArray.getResourceId(R.styleable.FragmentContainer_popEnterAnimation,0)
+        mPopExitAnimation = attributeArray.getResourceId(R.styleable.FragmentContainer_popExitAnimation,0)
 
         attributeArray.recycle()
 
